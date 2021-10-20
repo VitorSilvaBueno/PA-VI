@@ -7,15 +7,16 @@ Draw with Friends requires [Node.js](https://nodejs.org/) v14+ to run. Check the
 ```
 node -v
 ```
-The output should be something like `v14.17.5`.
+The output should be something like `v14.17.5`
 
 ## 💻 Running the project
 1 - Clone this repository to your preferred location with the command:
 ```
 git clone https://github.com/VitorSilvaBueno/drawing-with-friends.git
 ```
-2 - Inside the drawing-with-firends folder install the dependencies and and start the server.
+2 - Select drawing-with-friends folder, install the dependencies and start the server.
 ```sh
+cd drawing-with-friends
 npm install express socket.io
 node app
 ```
