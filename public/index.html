@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Drawing-with-friends</title>
+</head>
+<body>
+    <canvas id="screen"></canvas>
+    <script>
+        var io = io.connect("http://localhost:8080/");
+
+        document.addEventListener('DOMContentLoaded', () => {
+            io.on('updateDraw', pen => {
+                const screen = document.getElementById("screen")
+                const ctx = screen.getContext("2d")
+                screen.width = window.innerWidth;
+                screen.height = window.innerHeight;
+                ctx.lineWidth = 3;
+
+                const drawLine = (line) => {
+                ctx.beginPath();
+                ctx.moveTo(line.start.x, line.start.y);
+                ctx.lineTo(line.end.x, line.end.y);
+                ctx.stroke();
+                }
+
+                const drawing = () => {
+                    drawLine({ end: pen.end, start: pen.start })
+                    window.requestAnimationFrame(drawing);
+                }
+                drawing()
+            })
+         })
+    </script>
+</body>
+</html>
