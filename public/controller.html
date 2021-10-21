@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,12 +9,13 @@
     <script src="/socket.io/socket.io.js"></script>
     <title>Controller</title>
 </head>
+
 <body>
     <canvas id="controller"></canvas>
     <script src="./script.js"></script>
     <script>
         var io = io.connect("http://localhost:8080/");
-        
+
         document.addEventListener('DOMContentLoaded', () => {
 
             const controller = document.getElementById("controller")
@@ -21,23 +23,27 @@
             controller.width = window.innerWidth;
             controller.height = window.innerHeight;
             ctx.lineWidth = 3;
+            console.log(Math.floor(Math.random() * 16777215).toString(16));
 
             const pen = {
                 start: null,
                 end: { x: 0, y: 0 },
                 active: false,
-                moving: false
+                moving: false,
+                color: '#' + Math.floor(Math.random() * 16777215).toString(16)
             }
 
             const drawLine = (line) => {
                 ctx.beginPath();
                 ctx.moveTo(line.start.x, line.start.y);
                 ctx.lineTo(line.end.x, line.end.y);
+                ctx.strokeStyle = pen.color;
+                console.log(pen.color);
                 ctx.stroke();
             }
 
             controller.onmousemove = (e) => {
-                console.log(e.clientX, e.clientY)
+                // console.log(e.clientX, e.clientY)
                 pen.end.x = e.clientX
                 pen.end.y = e.clientY
                 pen.moving = true
@@ -49,6 +55,7 @@
             const drawing = () => {
                 if (pen.active && pen.moving && pen.start) {
                     io.emit('draw', pen)
+                    console.log(pen.color)
                     drawLine({ end: pen.end, start: pen.start })
                     pen.moving = false
                 }
@@ -59,4 +66,5 @@
         })
     </script>
 </body>
+
 </html>
