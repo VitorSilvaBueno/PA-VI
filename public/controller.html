@@ -12,7 +12,7 @@
     <canvas id="controller"></canvas>
     <script src="./script.js"></script>
     <script>
-        var io = io.connect("http://localhost:8080/");
+        var io = io.connect("http://192.168.0.111:8080/");
         
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -37,7 +37,6 @@
             }
 
             controller.onmousemove = (e) => {
-                console.log(e.clientX, e.clientY)
                 pen.end.x = e.clientX
                 pen.end.y = e.clientY
                 pen.moving = true
@@ -45,6 +44,24 @@
 
             controller.onmousedown = () => { pen.active = true };
             controller.onmouseup = () => { pen.active = false };
+
+            controller.addEventListener('touchmove', (e) => {
+                pen.active = true;
+                pen.end.x = e.touches[0].clientX;
+                pen.end.y = e.touches[0].clientY;
+                pen.moving = true
+            })
+
+            controller.addEventListener('touchstart', (e) => {
+                pen.end.x = e.touches[0].clientX;
+                pen.end.y = e.touches[0].clientY;
+            });
+            controller.addEventListener('touchend', (e) => { 
+                pen.active = false;
+                pen.end.x = e.touches[0].clientX;
+                pen.end.y = e.touches[0].clientY;
+                
+            });
 
             const drawing = () => {
                 if (pen.active && pen.moving && pen.start) {

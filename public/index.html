@@ -13,7 +13,6 @@
     <script>
         const screenWidth = document.body.clientWidth;
         var io = io.connect("http://localhost:8080/", {query: {'screenWidth': screenWidth}});
-        console.log('io -> ', io);
 
         document.addEventListener('DOMContentLoaded', () => {
             io.on('updateDraw', pen => {

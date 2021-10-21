@@ -30,7 +30,7 @@ io.on('connection', (socket) => {
 
     console.log('New conection ->', screenWidthList);
 
-    socket.on('draw', (item)=>{
+    socket.on('draw', (item) => {
         if (item.end.x > screenWidthList[2].screenWidth) {
           io.emit('updateDraw', {...item, direction: screenWidthList[3].id, firstSize: screenWidthList[2].screenWidth})
         } else {
