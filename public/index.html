@@ -13,29 +13,38 @@
 <body>
     <canvas id="screen"></canvas>
     <script>
-        var io = io.connect("http://localhost:8080/");
+        const screenWidth = document.body.clientWidth;
+        var io = io.connect("http://localhost:8080/", {query: {'screenWidth': screenWidth}});
 
         document.addEventListener('DOMContentLoaded', () => {
             io.on('updateDraw', pen => {
-                const screen = document.getElementById("screen")
-                const ctx = screen.getContext("2d")
-                screen.width = window.innerWidth;
-                screen.height = window.innerHeight;
-                ctx.lineWidth = 3;
+                if (pen.direction === io.id) {
+                    const screen = document.getElementById("screen")
+                    const ctx = screen.getContext("2d")
+                    screen.width = window.innerWidth;
+                    screen.height = window.innerHeight;
+                    ctx.lineWidth = 3;
 
-                const drawLine = (line) => {
+                    const drawLine = (line) => {
                     ctx.beginPath();
-                    ctx.moveTo(line.start.x, line.start.y);
-                    ctx.lineTo(line.end.x, line.end.y);
+                    if (!!pen.firstSize) {
+                        ctx.moveTo(line.start.x - pen.firstSize, line.start.y);
+                        ctx.lineTo(line.end.x - pen.firstSize, line.end.y);
+                    } else {
+                        ctx.moveTo(line.start.x, line.start.y);
+                        ctx.lineTo(line.end.x, line.end.y);
+                    }
                     ctx.strokeStyle = pen.color;
                     ctx.stroke();
-                }
+                    }
 
-                const drawing = () => {
-                    drawLine({ end: pen.end, start: pen.start })
-                    window.requestAnimationFrame(drawing);
+                    const drawing = () => {
+                        drawLine({ end: pen.end, start: pen.start })
+                        window.requestAnimationFrame(drawing);
+                    }
+                    drawing()
                 }
-                drawing()
+               
             })
         })
     </script>

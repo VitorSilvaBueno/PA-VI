@@ -17,7 +17,7 @@ git clone https://github.com/VitorSilvaBueno/drawing-with-friends.git
 2 - Select drawing-with-friends folder, install the dependencies and start the server.
 ```sh
 cd drawing-with-friends
-npm install express socket.io
-node app
+npm install 
+node app.js
 ```
 
