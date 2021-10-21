@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <title>Drawing-with-friends</title>
 </head>
+
 <body>
     <canvas id="screen"></canvas>
     <script>
@@ -22,10 +24,11 @@
                 ctx.lineWidth = 3;
 
                 const drawLine = (line) => {
-                ctx.beginPath();
-                ctx.moveTo(line.start.x, line.start.y);
-                ctx.lineTo(line.end.x, line.end.y);
-                ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(line.start.x, line.start.y);
+                    ctx.lineTo(line.end.x, line.end.y);
+                    ctx.strokeStyle = pen.color;
+                    ctx.stroke();
                 }
 
                 const drawing = () => {
@@ -34,7 +37,8 @@
                 }
                 drawing()
             })
-         })
+        })
     </script>
 </body>
+
 </html>
