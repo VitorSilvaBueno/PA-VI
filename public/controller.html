@@ -12,76 +12,72 @@
 
 <body>
     <canvas id="controller"></canvas>
-    <script src="./script.js"></script>
     <script>
-        var io = io.connect("http://192.168.0.111:8080/");
-        
-        document.addEventListener('DOMContentLoaded', () => {
+        const yourIP = "localhost"
+        var io = io.connect(`http://${yourIP}:8080/`);
+    
+        const controller = document.getElementById("controller")
+        const ctx = controller.getContext("2d")
+        controller.width = window.innerWidth;
+        controller.height = window.innerHeight;
 
-            const controller = document.getElementById("controller")
-            const ctx = controller.getContext("2d")
-            controller.width = window.innerWidth;
-            controller.height = window.innerHeight;
-            ctx.lineWidth = 3;
-            console.log(Math.floor(Math.random() * 16777215).toString(16));
+        ctx.lineWidth = 3;
 
-            const pen = {
-                start: null,
-                end: { x: 0, y: 0 },
-                active: false,
-                moving: false,
-                color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-            }
+        const pen = {
+            start: null,
+            end: { x: 0, y: 0 },
+            active: false,
+            moving: false,
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        }
 
-            const drawLine = (line) => {
-                ctx.beginPath();
-                ctx.moveTo(line.start.x, line.start.y);
-                ctx.lineTo(line.end.x, line.end.y);
-                ctx.strokeStyle = pen.color;
-                console.log(pen.color);
-                ctx.stroke();
-            }
+        const drawLine = (line) => {
+            ctx.beginPath();
+            ctx.moveTo(line.start.x, line.start.y);
+            ctx.lineTo(line.end.x, line.end.y);
+            ctx.strokeStyle = pen.color;
+            console.log(pen.color);
+            ctx.stroke();
+        }
 
-            controller.onmousemove = (e) => {
-                pen.end.x = e.clientX
-                pen.end.y = e.clientY
-                pen.moving = true
-            }
+        controller.onmousemove = (e) => {
+            pen.end.x = e.clientX
+            pen.end.y = e.clientY
+            pen.moving = true
+        }
 
-            controller.onmousedown = () => { pen.active = true };
-            controller.onmouseup = () => { pen.active = false };
+        controller.onmousedown = () => { pen.active = true };
 
-            controller.addEventListener('touchmove', (e) => {
-                pen.active = true;
-                pen.end.x = e.touches[0].clientX;
-                pen.end.y = e.touches[0].clientY;
-                pen.moving = true
-            })
+        controller.onmouseup = () => { pen.active = false };
 
-            controller.addEventListener('touchstart', (e) => {
-                pen.end.x = e.touches[0].clientX;
-                pen.end.y = e.touches[0].clientY;
-            });
-            controller.addEventListener('touchend', (e) => { 
-                pen.active = false;
-                pen.end.x = e.touches[0].clientX;
-                pen.end.y = e.touches[0].clientY;
-                
-            });
-
-            const drawing = () => {
-                if (pen.active && pen.moving && pen.start) {
-                    io.emit('draw', pen)
-                    console.log(pen.color)
-                    drawLine({ end: pen.end, start: pen.start })
-                    pen.moving = false
-                }
-                pen.start = { x: pen.end.x, y: pen.end.y }
-                window.requestAnimationFrame(drawing);
-            }
-            drawing()
+        controller.addEventListener('touchmove', (e) => {
+            pen.active = true;
+            pen.end.x = e.touches[0].clientX;
+            pen.end.y = e.touches[0].clientY;
+            pen.moving = true
         })
+
+        controller.addEventListener('touchstart', (e) => {
+            pen.end.x = e.touches[0].clientX;
+            pen.end.y = e.touches[0].clientY;
+        });
+        
+        controller.addEventListener('touchend', (e) => { 
+            pen.active = false;
+            pen.end.x = e.touches[0].clientX;
+            pen.end.y = e.touches[0].clientY;
+        });
+
+        const drawing = () => {
+            if (pen.active && pen.moving && pen.start) {
+                io.emit('draw', pen)
+                drawLine({ end: pen.end, start: pen.start })
+                pen.moving = false
+            }
+            pen.start = { x: pen.end.x, y: pen.end.y }
+            window.requestAnimationFrame(drawing);
+        }
+        drawing()
     </script>
 </body>
-
 </html>
