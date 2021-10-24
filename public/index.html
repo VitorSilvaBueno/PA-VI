@@ -1,5 +1,8 @@
+<!-- The main page has the canvas that displays the images drawn by the controller -->
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- Initialization of external resources -->
 
 <head>
     <meta charset="UTF-8">
@@ -11,11 +14,14 @@
 </head>
 
 <body>
+    <!-- Creation of the canvas -->
     <canvas id="screen"></canvas>
     <script>
+        // Connecting to the socket.io and setting the screenWidth for a correct drawing scale
         const screenWidth = document.body.clientWidth;
-        var io = io.connect("http://localhost:8080/", {query: {'screenWidth': screenWidth}});
+        var io = io.connect("http://localhost:8080/", { query: { 'screenWidth': screenWidth } });
 
+        // Routine for drawing on the canvas based on socket.io events
         io.on('updateDraw', pen => {
             if (pen.direction === io.id) {
                 const screen = document.getElementById("screen")
@@ -24,6 +30,7 @@
                 screen.height = window.innerHeight;
                 ctx.lineWidth = 3;
 
+                // Method for deciding the place, size of the lines, color and then drawing them, acounting for the multiple screens.
                 const drawLine = (line) => {
                     ctx.beginPath();
                     if (!!pen.firstSize) {
@@ -37,13 +44,17 @@
                     ctx.stroke();
                 }
 
+                // Drawing the lines
                 const drawing = () => {
                     drawLine({ end: pen.end, start: pen.start })
                     window.requestAnimationFrame(drawing);
                 }
+
+                // Method invocation
                 drawing()
             }
         })
     </script>
 </body>
+
 </html>
